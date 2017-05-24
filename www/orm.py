@@ -105,11 +105,11 @@ class ModelMetaclass(type):
         logging.info('found model: %s (table:%s)' % (name,tableName))
         mappings = dict()
         fields = []
-        primary_key = None
+        primaryKey = None
         for k,v in attrs.items():
             if isinstance(v,Field):
                 logging.info('found mapping: %s ==> %s' % (k,v))
-                mapping[k] = v
+                mappings[k] = v
                 if v.primary_key:
                     if primaryKey:
                         raise StandarError('Duplicate primary key for field: %s' % k)
@@ -120,7 +120,7 @@ class ModelMetaclass(type):
             raise StandarError('Primary key not found.')
         for k in mappings.keys():
             attrs.pop(k)
-        escaped_fields = list(map(lambda f: '%s' % f.fields))
+        escaped_fields = list(map(lambda f: '%s' % f,fields))
         attrs['__mappings__'] = mappings
         attrs['__table__'] = tableName
         attrs['__primary_key__'] = primaryKey
@@ -138,7 +138,7 @@ class Model(dict,metaclass=ModelMetaclass):
 
     def __getattr__(self,key):
         try:
-            self return self[key]
+             return self[key]
         except KeyError:
             raise AttributeError(r"'Model' object no attribute '%s'" % key)
 
